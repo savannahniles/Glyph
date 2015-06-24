@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Make a Glyph | {{ videoId }}</title>
+
+	<!-- J Query UI -->
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
+	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  	<script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+
+  	<!-- Custom style + CSS -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='um-videoHeadlines-demo.css') }}"></link>
+	<script src="{{ url_for('static', filename='authoringTool.js') }}"></script>
+	<script>
+	    init({{ videoId|tojson }}); //this allows us to access id from server
+	</script>
+
+	<!-- Font Awesome, google fonts -->
+	<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href='http://fonts.googleapis.com/css?family=Libre+Baskerville' rel='stylesheet' type='text/css'>
+
+</head>
+<body>
+	<div id="curtain"></div>
+	<a href="/">
+		<div id="authoring-tool-header" class="hover-highlight">
+			<h1>Glyph</h1>
+		</div>
+	</a>
+	<div id="menu">
+		<div class="small-text"><a href="/">use another video</a></div>
+		<div class="small-text">guide + faq at:</div>
+		<div class="small-text">http://www.glyph.video/</div>
+	</div>
+
+
+	<div id="gifBuilder"> <!-- region where the gif is built and displayed -->
+		<div class="col leftCol" id="bigLeftCol"> <!-- left col for building -->
+
+
+
+				<div id="focus-left-button" onClick="focusLeft()" ><i class="fa fa-chevron-left fa-lg"></i></div>
+
+				<div class="col leftCol">
+
+					<!-- holds the player and controls, everything except the key frames -->
+					<div class="playerContainer" id="player-toggle-container">
+
+						<div id="error"></div> <!-- errors in gif size displayed here for now -->
+						<canvas class="mask-canvas mask-hidden" id="split-mask" width="560" height="315"></canvas>
+						<canvas class="mask-canvas mask-hidden" id="region-mask" width="560" height="315"></canvas>
+
+						<!-- the iFrame -->
+						<iframe width="560" height="315" src="http://www.youtube.com/embed/{{ videoId[8:]  }}?enablejsapi=1&theme=light&showinfo=0&modestbranding=1&controls=0" frameborder="0" id="player-toggle"></iframe>
+						
+						<!-- the bottom controls -->
+						<div id="clip-selection-controls">
+							<label class="controls-heading"> Clip Selection <span> Drag the slider to change. Or edit the text boxes below and hit 'Enter'. </span> </label>
+							<div id="slider-range"></div>
+							<p class="controls-section time-controls">
+							  <label for="time-box"> Current time: </i></label>
+							  <input type="text" id="time-box" readonly>
+							  <label for="start"> Clip start: </i></label>
+							  <input type="text" id="start" autofocus>
+							  <label for="duration"> Clip duration: </label>
+							  <input type="text" id="duration">
+							  <!-- <span id="enter-time" class="custom-button" onclick="">Update Time</span> -->
+							</p>
+
+							<!-- Loop detection  -->
+							<div class="controls-section">
+								<label class="controls-heading"> Auto-Detect Loops <span> Automatically detect any perfect loops that happen in this clip. </span> </label>
+								<div id="loop-results">
+									<button class="choice-button" id="auto-loop" onclick="loopDetection()">Detect Loops</button>
+								</div>
+							</div>
+							
+						</div> <!-- end controls -->
+
+					</div> <!-- end player container -->
+				</div>  <!-- end left mini col -->
+
+
+				<div class="col rightCol">
+					<div class="controls-section">
+
+						<!-- Key frames -->
+						<label class="controls-heading"> Key Frames <span> The first and last frames of the clip. </span></label>
+						<div class="keyframeContainer">
+							<div class="keyframe dotted" id="startFrame"></div>
+							<div>Start frame</div>
+						</div> 
+						<div class="keyframeContainer">
+							<div class="keyframe dotted" id="endFrame"></div>
+							<div>End frame</div>
+						</div>
+					</div>
+
+					<!-- Loooooping -->
+					<div class="controls-section" id="loop">
+					  	<label class="controls-heading"> Looping <span> Select how the gif loops. </span> </label>
+					    <input class="loopButton" type="radio" value="time_symetrize" id="time_symetrize" name="loop">
+					    	<label for="time_symetrize">Palindrome</label>
+					    <input class="loopButton" type="radio" value="progressive_fade" id="progressive_fade" name="loop" >
+					    	<label for="progressive_fade">Progressive Fade</label>
+					    <input class="loopButton" type="radio" value="still_fade" id="still_fade" name="loop">
+					    	<label for="still_fade">Still Fade</label>
+					    <input class="loopButton" type="radio" value="standard" id="standard" name="loop" checked="checked">
+					    	<label for="standard">Standard</label>
+					</div>
+
+					<!-- mask editor -->
+					<div class="controls-section">
+						<label class="controls-heading"> Masking <span> Designate regions of the clip as static and dynamic. </span> </label>
+						<div id="split-mask-button" class="custom-button" onclick="splitMaskButtonClicked()">Split Mask</div>
+						<div id="region-mask-button" class="custom-button" onclick="regionMaskButtonClicked()">Region Mask</div>
+						<label id="mask-instructions" class="small-text"></label>
+						</br>
+						<p id="region-choice">
+							<span id="arrow-up"></span>
+							<input class="choice-button" type="radio" value="2" id="2" name="region-choice">
+						    	<label for="2" id="2-label">Freeze Right Side</label>
+						    <input class="choice-button" type="radio" value="1" id="1" name="region-choice" checked="checked">
+						    	<label for="1" id="1-label">Freeze Left Side</label>
+						    <label class="small-text" for="stillFrame"> Make mask from frame</label>
+							  <input id="still-frame" type="number" name="quantity" min="0" max="15" step=".25" value="0"> <span class="small-text"></span>
+								<label class="small-text" for="stillFrame"> second(s) in</label>
+						</p>
+						</br>
+
+					</div>
+					<!-- output options -->
+					<div class="controls-section">
+						<label class="controls-heading"> Output <span> Select output options and build your glyph.</span></label>
+						<label class="output-controls" for="output-size"> Pixel width: </label>
+							<input type="text" id="output-size" value="300">
+						<label class="output-controls" for="mp4">Save .mp4?</label>
+							<input type="checkbox" id="mp4">
+						<label class="output-controls" for="mp4">Quality:</label>
+						<select name="fps" id="fps">
+						  <option value="auto">Auto detect</option>
+						  <option value="10">Low (10 fps)</option>
+						  <option value="15">Medium (15 fps)</option>
+						  <option value="20">High (20 fps)</option>
+						  <option value="25">Best (25 fps)</option>
+						</select>
+						<div class="output-button"> <!-- output button -->
+						  	<div id="outputGif" class="hover-highlight" onclick="outputGif()">Build <i class="fa fa-long-arrow-right"></i></div>
+						</div>
+					</div>
+
+				</div>
+				
+				
+			
+
+		</div> <!-- end left col -->
+
+		<div class="col rightCol full-height"> <!-- right col for displyaing gif -->
+				<div id="focus-right-button" onClick="focusRight()" ><i class="fa fa-chevron-right fa-lg"></i></div>
+				<div class="dotted" id="gifContainer"></div></br>
+				<div id="save-note" class="small-text"></div>
+
+		</div>
+	</div>
+		
+	
+</body>
+</html>

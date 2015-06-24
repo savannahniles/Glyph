@@ -1,0 +1,13 @@
+beautifulsoup4==4.3.2
+decorator==3.4.2
+Flask==0.10.1
+imageio==1.2
+itsdangerous==0.24
+Jinja2==2.7.3
+MarkupSafe==0.23
+moviepy==0.2.2.11
+numpy==1.9.2
+Pillow==2.8.2
+tqdm==1.0
+Werkzeug==0.10.4
+youtube-dl==2015.6.15

@@ -1,0 +1,694 @@
+/*
+Colors:
+
+Orange: #ff7651
+White: #F0F0F0
+Gray: #dadada
+Dark Gray: #464E54
+*/
+
+
+@font-face {
+    font-family: Avenir;
+    src: url(/static/avenir.ttf);
+}
+
+body {
+	font-family: Avenir;
+	margin: 0;
+	padding: 0;
+	color: #464E54;
+}
+
+.outer {
+    display: table;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+.middle {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.inner {
+    margin-left: auto;
+    margin-right: auto; 
+}
+
+.blink_me {
+    -webkit-animation-name: blinker;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+
+    -moz-animation-name: blinker;
+    -moz-animation-duration: 1s;
+    -moz-animation-timing-function: linear;
+    -moz-animation-iteration-count: infinite;
+
+    animation-name: blinker;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@-moz-keyframes blinker {  
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+@-webkit-keyframes blinker {  
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+@keyframes blinker {  
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+h1 {
+  font-family: 'Libre Baskerville', serif;
+  font-weight: lighter;
+  color: #ff7651;
+  text-shadow: 2px 2px #F0F0F0; 
+  font-size: 62px;
+  text-align: center;
+  margin: 0px;
+}
+
+h2 {
+	font-family: Avenir;
+	font-weight: lighter;
+	color: #464E54;
+}
+
+.small-text {
+  font-style: italic;
+  font-size: 90%;
+  color: #464E54;
+}
+
+*:focus {
+    outline: 0;
+}
+
+.hover-highlight:hover {
+	opacity: .65;
+	cursor: pointer;
+	-webkit-transition: opacity .5s;
+	-moz-transition: opacity .5s;
+	-ms-transition: opacity .5s;
+	-o-transition: opacity .5s;
+	transition: opacity .5s;
+}
+
+.dotted {
+	border: 3px dashed #dadada;
+
+}
+
+.align-right {
+	text-align: right;
+}
+
+.col {
+	width: 50%;
+	/*height: 100%;*/
+
+}
+
+.rightCol {
+	float: right;
+	background: #dadada;
+}
+
+.leftCol {
+	float: left;
+}
+
+.full-height {
+	height: 100vh;
+	min-height: 700px;
+
+}
+
+input[type='text'] {
+	font-size: 12px;
+	width: 50px;
+	color: #ff7651;
+	font-family: 'Avenir';
+	padding: 4px 2px;
+	margin-right: 10px;
+}
+
+/* ------------------------- Landing page ----------------------------- */
+
+
+.landing .big-title {
+	 margin: 40px auto;
+	z-index: 5;
+}
+
+#refreshImage {
+  position: absolute;
+  left: 99px;
+  top: 15px;
+  color: #dadada;
+}
+
+.landing .info {
+	padding: 0 50px;
+	text-align: center;
+	position: relative;
+	/*width: 75vw;*/
+	/*right: 0px;*/
+	/*top: 320px;*/
+	/*background: #dadada*/
+	font-weight: lighter;
+
+}
+
+.landing .info h2 {
+	font-size: 21px;
+	text-align: left;
+	color: #464E54;
+	padding: 50px 100px;
+	margin-bottom: 0;
+}
+
+.landing .italic {
+	border-bottom: 2px solid #ff7651;
+}
+
+.landing .info ul {
+	list-style-type: circle;
+}
+
+.landing a {
+	color: #ff7651;
+	text-decoration: none;
+	border-bottom: 2px solid #ff7651;
+}
+
+.landing .info .huge {
+	display: inline-block;
+	margin: 20px 20px 10px 20px;
+	border: 1px solid #B6B6B6;
+}
+
+.signupContainer {
+	width: 100%;
+	background: #dadada;
+	margin-top: 50px;
+  	padding: 50px 0;
+}
+
+#mc_embed_signup {
+	width: 500px;
+	margin: 0px auto;
+}
+
+/* ------------------------- App ------------------------------------*/
+
+#infoAppWin {
+	font-size: 16px;
+	text-align: center;
+	width: 85%;
+	margin: 0px auto;
+}
+
+#infoAppWin a {
+	color: #61BDB2;
+}
+
+#infoAppWin a:hover {
+	color: #449188;
+}
+
+
+/* ------------------------- Home page ----------------------------- */
+
+
+.big-title {
+  width: 270px;
+  height: 270px;
+  border-radius: 490px;
+  margin: 0px auto 50px auto;
+  border: 6px solid #ff7651;
+  line-height: 270px;
+  text-align: center;
+}
+
+#url-form {
+	width: 1000px;
+  	text-align: center;
+  	margin: 0px auto;
+}
+
+#url-form input[type='text'] {
+	width: 250px;
+	height: 30px;
+	font-size: 24px;
+	color: #dadada;
+	border: none;
+	border-bottom: 2px solid #464E54;
+}
+
+#url-form button {
+	border: none;
+	font-size: 24px;
+	color: #464E54;
+	background: white;
+}
+
+h2 .small-text {
+	font-size: 75%;
+}
+
+.suggestion {
+	cursor: pointer;
+	color: #61BDB2;
+}
+
+#url-loading {
+	margin-top: 20px;
+	color: #61BDB2;
+	visibility: hidden;
+}
+
+#errors {
+	color: red;
+}
+
+/* ------------------------- Authoring tool ----------------------------- */
+
+#curtain {
+	position: fixed;
+	background: white;
+	height: 100%;
+	width: 100%;
+	z-index: 10;
+	-webkit-transition: opacity .5s;
+	-moz-transition: opacity .5s;
+	-ms-transition: opacity .5s;
+	-o-transition: opacity .5s;
+	transition: opacity .5s;
+}
+
+#authoring-tool-header {
+  position: absolute;
+  z-index: 3;
+  width: 70px;
+  height: 70px;
+  border-radius: 490px;
+  margin: 10px;
+  border: 2px solid #ff7651;
+  line-height: 70px;
+  text-align: center;
+  background: white;
+}
+
+#authoring-tool-header h1 {
+	font-size: 18px;
+	text-shadow: none;
+}
+
+#menu {
+	position: absolute;
+	left: 70%;
+	top: 15px;
+	z-index: 4;
+}
+
+#menu div {
+	font-style: none;
+	color: #464E54;
+}
+
+#menu div a {
+	color: #61BDB2;
+	text-decoration: underline;
+}
+
+#gifBuilder {
+	z-index: 1;
+	overflow: hidden;
+	min-width: 2400px;
+	width: 170%;
+	position: relative;
+	left: 0;
+	-webkit-transition: left .5s;
+	-moz-transition: left .5s;
+	-ms-transition: left .5s;
+	-o-transition: left .5s;
+	transition: left .5s;
+
+}
+
+/*special shit for the sub columns on the left side*/
+.leftCol .rightCol {
+	background: rgba(255,255,255,0);
+}
+
+#bigLeftCol {
+	padding-top: 50px;
+}
+
+#focus-left-button, #focus-right-button {
+	/*cursor: pointer;*/
+ 	margin: 20px;
+ 	color: #464E54;
+}
+
+#focus-left-button {
+	text-align: right;
+	opacity: 0;
+	position: relative;
+	top: -50px;
+}
+
+#focus-left-button i, #focus-right-button i {
+	cursor: pointer;
+}
+
+/* Controls, general */
+
+.controls-section {
+	margin-bottom: 10px;
+	text-align: left;
+}
+
+.controls-heading {
+	color: #464E54;
+	display: block;
+	border-bottom: 1px solid #dadada;
+	padding: 5px 0;
+	margin-bottom: 15px;
+	width: 325px;
+	text-align: left;
+}
+
+.controls-heading span {
+	color: #dadada;
+	font-style: italic;
+	position: absolute;
+	margin-left: 10px;
+	font-size: 90%;
+	line-height: 23px;
+}
+
+/*Controls */
+
+#clip-selection-controls {
+	width: 560px;
+	display: inline-block;
+}
+
+.ui-slider .ui-slider-handle {
+	cursor: col-resize;
+	background: #dadada;
+	border-radius: 100px;
+}
+
+.time-controls label, .output-controls {
+	font-size: 12px;
+	padding: 6px 5px;
+}
+
+#time-box {
+	border: none;
+	color: #464E54;
+}
+
+#clip-selection-controls label i {
+	color: #ff7651;
+}
+
+#enter-time {
+	width: 70px;
+	float: none;
+}
+
+/* key frames (start and end frame)*/
+
+.keyframeContainer, .keyframe, .playerContainer {
+	display: inline-block;
+}
+
+.keyframeContainer {
+	margin-right: 20px;
+	text-align: center;
+}
+
+.keyframe {
+	width: 180px;
+	height: 100px;
+}
+
+.thumb {
+	width: 100%;
+}
+
+/* player iFrame + container */
+
+.playerContainer {
+  	margin: 0px auto;
+  	margin-right: 20px;
+  	text-align: right;
+}
+
+#error {
+	position: absolute;
+	width: 200px;
+	text-align: left;
+	padding: 10px;
+	color: red;
+}
+
+#player {
+	margin: 0px auto;
+}
+
+
+/* Masking */
+
+.custom-button {
+	width: 100px;
+	background: white;
+	color: #555555;
+	border: 1px solid #d3d3d3;
+	text-align: center;
+	cursor: pointer;
+	float: left;
+	padding: .4em 1em;
+	font-size: 12px;
+    font-family: 'Avenir';
+    margin-right: 6px;
+}
+
+.custom-button:hover {
+	opacity: 1;
+	border-color: #999999;
+	color: #212121;
+}
+
+
+.hide-mask-button {
+	display: none;
+}
+
+.mask-canvas {
+	position: absolute;
+}
+
+.mask-hidden {
+	width: 0;
+	opacity: 0;
+	height: 0px;
+}
+
+#split-mask {
+	background: rgba(106, 247, 236, 0.5)
+}
+
+#region-mask {
+	background: rgba(182, 152, 255, 0.5);
+}
+
+#region-choice {
+	position: relative;
+	top: 20px;
+	background: #dadada;
+	margin: 0;
+	margin-right: 35px;
+	padding: 1em;
+	padding-left: 0px;
+	opacity: 0;
+	-webkit-transition: opacity .25s;
+	-moz-transition: opacity .25s;
+	-ms-transition: opacity .25s;
+	-o-transition: opacity .25s;
+	transition: opacity .25s;
+}
+
+#arrow-up {
+	width: 0;
+	height: 0;
+	position: relative;
+	top: -50px;
+	left: -51px; /*move to 183*/
+	border-left: 15px solid transparent;
+	border-right: 15px solid transparent;
+	border-bottom: 15px solid #dadada;
+  	-webkit-transition: left .5s;
+	-moz-transition: left .5s;
+	-ms-transition: left .5s;
+	-o-transition: left .5s;
+	transition: left .5s;
+}
+
+#region-choice label.small-text {
+	font-size: 12px;
+}
+
+#region-choice input[type="number"]{
+	font-size: 12px;
+	color: #464E54;
+	width: 37px;
+}
+
+/*.choice-button {
+	width: 50px;
+	display: block;
+}*/
+
+/* Auto loop detection */
+
+#auto-loop {
+	width: auto; 
+	display: block;
+	color: #555555;
+	border: 1px solid #d3d3d3;
+	padding: .4em 1em;
+	font-size: 12px;
+    font-family: 'Avenir';
+    background: white;
+    cursor: pointer;
+}
+
+#loop-results {
+  height: 40px;
+  white-space: nowrap;
+  overflow: scroll;
+  padding: 5px;
+}
+
+#loop-results .fa-angle-right {
+	padding-left: 10px;
+}
+
+#loop-results span {
+	padding-right: 30px;
+
+}
+
+#loop-results .pair {
+	cursor: pointer;
+	background: #dadada;
+	padding: 5px;
+	margin-right: 15px;
+	font-style: normal;
+	font-size: 80%;
+}
+
+/* Looping controls */
+
+.ui-buttonset .ui-button {
+	border-radius: 0px;
+	background: #fff;
+  	margin-right: 3px;
+}
+
+.ui-buttonset .ui-state-active, .mask-active, .mask-active:hover {
+	border-color: #ff7651;
+	border: 1px solid #ff7651;
+	color: #555555;
+}
+
+.ui-button-text{
+	font-size: 12px;
+	font-family: 'Avenir';
+}
+
+/*output controls*/
+
+#output-size {
+	width: 30px;
+}
+
+.output-button {
+	text-align: right;
+}
+
+
+#outputGif {
+	cursor: pointer;
+	display: inline-block;
+	position: relative;
+	/*border-bottom:1px solid #ff7651;*/
+	margin: 0px 50px;
+	/*background: #ff7651;*/
+	padding: 7px;
+	color: #ff7651;
+/*	width: 0;
+	height: 0;
+	border-top: 40px solid transparent;
+	border-bottom: 40px solid transparent;
+	border-left: 60px solid #ff7651;*/
+	border: 2px solid #ff7651;
+	font-family: 'Libre Baskerville', serif;
+	font-size: 14px;
+}
+
+/* right side collumn with gif output */
+
+#rightColTitle {
+	width: 560px;
+	margin-left: 20px;
+	font-size: 18px;
+  	margin-top: 5px;
+}
+
+#gifContainer {
+	height: 315px;
+	width: 560px;
+	margin: 0px auto;
+	border: 3px dashed #ff7651;
+	position: relative;
+    top: calc(50% - 157px - 62px); /*half the height of the image and height of the button*/
+}
+
+#save-note {
+	position: relative;
+	top: 140px;
+	text-align: center;
+}
+
+#loadingGif {
+	position: relative;
+  	top: 130px;
+	text-align: center;
+  	color: #ff7651;
+  	font-size: 18px;
+}
+
+.gif {
+	height: 100%;
+}
+
