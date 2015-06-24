@@ -1,0 +1,171 @@
+/*
+Colors:
+
+Orange: #ff7651
+White: #F0F0F0
+Gray: #dadada
+Dark Gray: #464E54
+*/
+
+
+@font-face {
+    font-family: Avenir;
+    src: url(/css/avenir.ttf);
+}
+
+body {
+	font-family: Avenir;
+	margin: 0;
+	padding: 0;
+	color: #464E54;
+}
+
+.outer {
+    display: table;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+.middle {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.inner {
+    margin-left: auto;
+    margin-right: auto; 
+}
+
+.blink_me {
+    -webkit-animation-name: blinker;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+
+    -moz-animation-name: blinker;
+    -moz-animation-duration: 1s;
+    -moz-animation-timing-function: linear;
+    -moz-animation-iteration-count: infinite;
+
+    animation-name: blinker;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@-moz-keyframes blinker {  
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+@-webkit-keyframes blinker {  
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+@keyframes blinker {  
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+h1 {
+  font-family: 'Libre Baskerville', serif;
+  font-weight: lighter;
+  color: #ff7651;
+  text-shadow: 2px 2px #F0F0F0; 
+  font-size: 62px;
+  text-align: center;
+  margin: 0px;
+}
+
+h2 {
+	font-family: Avenir;
+	font-weight: lighter;
+	color: #464E54;
+}
+
+.small-text {
+  font-style: italic;
+  font-size: 90%;
+  color: #464E54;
+}
+
+*:focus {
+    outline: 0;
+}
+
+/*.hover-highlight:hover {
+	opacity: .65;
+	cursor: pointer;
+	-webkit-transition: opacity .5s;
+	-moz-transition: opacity .5s;
+	-ms-transition: opacity .5s;
+	-o-transition: opacity .5s;
+	transition: opacity .5s;
+}*/
+
+.dotted {
+	border: 3px dashed #dadada;
+
+}
+
+.align-right {
+	text-align: right;
+}
+
+.col {
+	width: 50%;
+	/*height: 100%;*/
+
+}
+
+.rightCol {
+	float: right;
+	background: #dadada;
+}
+
+.leftCol {
+	float: left;
+}
+
+.full-height {
+	height: 100vh;
+	min-height: 700px;
+
+}
+
+input[type='text'] {
+	font-size: 12px;
+	width: 50px;
+	color: #ff7651;
+	font-family: 'Avenir';
+	padding: 4px 2px;
+	margin-right: 10px;
+}
+
+/* ------------------------- App ------------------------------------*/
+
+#infoAppWin {
+	font-size: 16px;
+	text-align: center;
+	width: 85%;
+	margin: 0px auto;
+}
+
+
+/* ------------------------- Home page ----------------------------- */
+
+
+.big-title {
+  width: 270px;
+  height: 270px;
+  border-radius: 490px;
+  margin: 0px auto 50px auto;
+  border: 6px solid #ff7651;
+  line-height: 270px;
+  text-align: center;
+}
