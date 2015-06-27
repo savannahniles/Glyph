@@ -1,6 +1,6 @@
 <h1>Glyph</h1>
 
-<p>Launching in the next day or so...</p>
+<h2>Launching in the next day or so...</h2>
 
 <p>Glyph is a tool for generating expressive gifs from video, including seamless loops and cinemagraphs. Glyph was developed to expand the possibilities of excerpting video: sometimes, there's value in sharing a video clip with more richness, more evocativeness, more subtly, or more "glanceability" than a straight excerpt. Glyph makes simple transformations to gifs and video clips that might otherwise require photoshop, allowing you to automatically detect perfect loops that occur in a video, create the appearance of seamless motion in a non-looping clip, still some regions of movement in a clip to highlight others, or imbue a still frame with subtle dynamism. </p>
 
@@ -13,3 +13,34 @@
 <p>Glyph is open-source. You can contribute to the project here on GitHub. </p>
 
 <p>If you make cool gifs with Glyph, send them to me. </p>
+
+<h2>Installation</h2>
+
+Step 1: Make sure you’re running Python 2.7.
+Step 2: Make sure you have pip installed
+Step 3: Make sure you have virtualenv installed 
+Step 4: Make sure you have ImageMagick installed
+YOU’VE INSTALLED ALL DEPENDENCIES!! 
+
+Download this directory. Delete Glyph-nw, (that's the nodewebkit app for the front end, which I keep here for my own purposes, but you don't need it).
+
+Place the whole `/Glyph` directory in your documents.
+
+Run start.command by double clickling on it. This will create a `virtual env`, install the dependencies: 
+
+```
+pip install flask moviepy beautifulsoup4 youtube-dl Pillow requests
+```
+
+Then run:
+
+```
+python um-videoHeadlines-demo.py 1369
+```
+Which will start the server and open the app. 
+
+
+You might get an error about a failure to import cv2. MoviePy requires cv2 to run and is the one calling it. You should link your Python wrapper to the Python you're running via your vitural environment. 
+——— cd /usr/local/um/glyph/lib/python2.7/site-packages/
+——— ln -s /usr/local/lib/python2.7/dist-packages/cv* .
+
