@@ -4,6 +4,7 @@ import json
 import csv
 import time
 import urllib
+import os
 from os.path import relpath
 
 #helper functions
@@ -35,7 +36,7 @@ def authoringTool(videoId):
     mime = urllib.unquote(request.args.get('mime')).decode('utf8')
     videoId = urllib.unquote(videoId).decode('utf8')
     if typeVid != "youtube":
-        videoId = '../' + video._STATIC_BASE + videoId + '/' + videoId
+        videoId = '../' + video._STATIC_BASE + os.path.splitext(videoId)[0] + '/' + videoId
 
     #check to see if there's a video folder here
     #if not, download

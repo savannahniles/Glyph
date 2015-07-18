@@ -43,7 +43,7 @@ def getVideoInfo(url):
 					"video/quicktime","video/x-flv","video/3gpp" \
 					"video/x-msvideo", "video/x-ms-wmv", "video/MP2T", \
 					"application/x-mpegURL"]:
-					filePath = os.path.join(_STATIC_BASE, posixpath.basename(url)+'/')
+					filePath = os.path.join(_STATIC_BASE, os.path.splitext(posixpath.basename(url))[0]+'/')
 					if not os.path.isdir(filePath):
 						os.makedirs(r''+filePath)
 					filePath = os.path.join(filePath, posixpath.basename(url))
@@ -57,7 +57,7 @@ def getVideoInfo(url):
 				"video/x-msvideo", "video/x-ms-wmv", "video/MP2T", \
 				"application/x-mpegURL"]:
 
-		filePath = os.path.join(_STATIC_BASE, posixpath.basename(url)+'/')
+		filePath = os.path.join(_STATIC_BASE, os.path.splitext(posixpath.basename(url))[0]+'/')
 		if not os.path.isdir(filePath):
 			os.makedirs(r''+filePath)
 		filePath = os.path.join(filePath, posixpath.basename(url))
@@ -92,7 +92,8 @@ def createThumbnail(videoId, time, startOrEnd):
 	print "////////////////"
 	print "Processing thumbnail..."
 	videoFile = getVideoPath(videoId)
-	thumbnailPath = os.path.join(_STATIC_BASE, videoId, startOrEnd + ".png" )
+	print videoFile + "hehehehe"
+	thumbnailPath = os.path.join(_STATIC_BASE, os.path.splitext(videoId)[0], startOrEnd + ".png" )
 	clip = VideoFileClip(videoFile, audio=False)
 	clip.save_frame(thumbnailPath, t=float(time)) # saves the frame a t=2s
 	return os.path.join(_STATIC_URL, thumbnailPath)
@@ -101,7 +102,7 @@ def loopDetection(videoId):
 	print "////////////////"
 	print "Looking for loops..."
 
-	outputDir = os.path.join(_STATIC_BASE, videoId)
+	outputDir = os.path.join(_STATIC_BASE, os.path.splitext(videoId)[0])
 	selected_scenes_file = os.path.join(outputDir, "loops.txt") #ultimately what we want to fill
 	if not os.path.exists(selected_scenes_file):
 
@@ -217,10 +218,12 @@ def processGif(videoId, start, end, pixelWidth, loop, maskType, stillFrame, mask
 
 def getVideoPath(videoId):
 	# we do not know if its mp4 and if we want that youtube works...
+	videoId = os.path.splitext(videoId)[0]
 	prefixed = [filename for filename in os.listdir(os.path.join(_STATIC_BASE, videoId)) if filename.startswith(videoId)]
 	return os.path.join(_STATIC_BASE, videoId, prefixed[0])
 
 def getGifPath(videoId, start, end, pixelWidth, loop, maskType, stillFrame, mask, fps): #returns shots
+	videoId = os.path.splitext(videoId)[0]
 	outputDir = os.path.join(_STATIC_BASE, videoId, "gifs") #output for everything here
 	if not os.path.exists(outputDir):
 		os.makedirs(outputDir)

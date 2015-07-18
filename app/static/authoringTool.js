@@ -546,9 +546,6 @@ function clearError () {
 
 
 window.onload = function () {
-	console.log ("ready freddy");
 	document.getElementById("curtain").style.opacity = 0;
 	document.getElementById("curtain").style.zIndex = -10;
-
-  onStart();
 }

@@ -165,12 +165,17 @@
 		</div>
 	</div>
 
-	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-  <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
-	<script src="{{ url_for('static', filename='authoringTool.js') }}"></script>
+	<script src="{{ url_for('static', filename='head.1.0.3.core.min.js') }}"></script>
 	<script>
-			init({{ videoId|tojson }}); //this allows us to access id from server
+	head.js("{{ url_for('static', filename='jquery-1.10.2.min.js') }}",
+				"{{ url_for('static', filename='jquery-ui.1.11.3.min.js') }}",
+				"{{ url_for('static', filename='authoringTool.js') }}");
+	head.ready(function() {
+		onStart();
+		console.log ("ready freddy");
+	});
 	</script>
+
 
 </body>
 </html>
