@@ -2,12 +2,14 @@
 
 var _STATIC_URL = "/";
 var videoId;
+
+
+
 var player, startTime, endTime;
 var timeUpdater = null;
 var thumbnailUpdater = null;
 var maxGifLength = 15;
 var currentMaskCoordinates = null;
-var VIDEO_TYPE = null;
 
 
 function getQueryVariable(variable)
@@ -20,52 +22,52 @@ function getQueryVariable(variable)
        }
        return(false);
 }
+
 var url = window.location.pathname;
 var GET_VIDEO_TYPE = getQueryVariable('type');
 var VIDEO_ID_FILE = url.substring(url.lastIndexOf('/')+1);
 
+if(GET_VIDEO_TYPE=="youtube"){
+  //download YouTube player API
+  var tag = document.createElement('script');
+  tag.src = "//www.youtube.com/iframe_api";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag); // Create YouTube player(s) after the API code downloads.
 
-var onStart = function() {
-  if(document.getElementById('player-toggle') != null){
-    //download YouTube player API
-    var tag = document.createElement('script');
-    tag.src = "//www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    // Create YouTube player(s) after the API code downloads.
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-    function onYouTubeIframeAPIReady() {
-        player = new YT.Player('player-toggle', {
-        events: {
-          'onReady': onPlayerReady
-        }
-      });
-    }
-    function onPlayerReady(evt) {
-        initSlider();
-    }
+  function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player-toggle', {
+  		events: {
+  			'onReady': onPlayerReady
+  		}
+  	});
   }
-  else {
-    document.getElementById('player-video').addEventListener('loadeddata', function() {
-        player = {
-          getDuration: function() {
-            return parseInt(document.getElementById('player-video').duration);
-          },
-          mute: function() {
-            return document.getElementById('player-video').setAttribute('muted','true');
-          },
-          seekTo: function(t) {
-            return document.getElementById('player-video').currentTime = t;
-          },
-          getCurrentTime: function() {
-            return document.getElementById('player-video').currentTime;
-          }
-        };
-        initSlider();
-      }, false);
 
+  function onPlayerReady(evt) {
+      initSlider();
   }
 }
+else {
+  document.getElementById('player-video').addEventListener('loadedmetadata', function() {
+      player = {
+        getDuration: function() {
+          return parseInt(document.getElementById('player-video').duration);
+        },
+        mute: function() {
+          return document.getElementById('player-video').setAttribute('muted','true');
+        },
+        seekTo: function(t) {
+          return document.getElementById('player-video').currentTime = t;
+        },
+        getCurrentTime: function() {
+          return document.getElementById('player-video').currentTime;
+        }
+      };
+      initSlider();
+    }, false);
+}
+
+
+
 
 
 
@@ -74,15 +76,20 @@ var onStart = function() {
 //---------------------------Set the page up (content + listeners)-----------------------------
 
 function init(id) {
+  if(GET_VIDEO_TYPE=="youtube")
 	videoId = id;
+  else {
+    videoId = VIDEO_ID_FILE;
+  }
+
 	initLoopButtons();
 	$('document').ready(function(){
 		buildMask('region-mask');
 		buildMask('split-mask');
 		verticallyCenter();
-		document.getElementById("save-note").innerHTML = "<i class='fa fa-folder-open'></i>"
-    + " GIFs + video located in Documents" +
-    "> Glyph > videos > " + videoId + " > gifs";
+		document.getElementById("save-note").innerHTML = "<i class='fa fa-folder-open'></i> GIFs"
+    + "+ video located in Documents > Glyph > videos > "
+    + videoId + " > gifs";
 	});
 
 }
@@ -229,8 +236,6 @@ function initSlider() {
 		duration = 2.25;
 		endTime = startTime + duration;
 		var videoDuration = player.getDuration();
-    console.log("videoDuration" + videoDuration);
-
 	    $( "#slider-range" ).slider({
 	      min: 0,
 	      max: videoDuration,
@@ -290,11 +295,7 @@ function refreshThumbnails() {
 	clearTimeout(thumbnailUpdater);
 	function getThumbnails() {
 		console.log ("refreshThumbnails " + startTime + " " + endTime);
-
-		var thumbnailUrl = _STATIC_URL + 'authoringTool/makeThumbnails/' + VIDEO_ID_FILE
-                      + '?type='+ GET_VIDEO_TYPE +'&start=' + startTime
-                      + '&end=' + endTime;
-    console.log(thumbnailUrl);
+		var thumbnailUrl = _STATIC_URL + 'authoringTool/makeThumbnails/' + videoId + '?start=' + startTime + '&end=' + endTime;
 		var errorMessage = 'Oops. There was a problem loading the thumbnails. Something might be up with the video file. Try deleting the video directory and re-submitting its url.';
 		handleRequest(thumbnailUrl, errorMessage, showThumbnails);
 	}
@@ -355,7 +356,7 @@ var showGif = function () {
 //we could clean these two up if we wanted
 
 var showThumbnails = function () {
-	console.log ("showThumbnails fired")
+	console.log ("here!")
 	startContainer = document.getElementById("startFrame");
 	endContainer = document.getElementById("endFrame");
 	response = JSON.parse(this.responseText);
@@ -411,7 +412,7 @@ function focusRight () {
 
 function loopDetection() {
 	document.getElementById("loop-results").innerHTML = "<span class='blink_me'> Looking for loops. This takes a while. </br> Leave Glyph alone, and check terminal <i class='fa fa-terminal'></i> for progress.</span>"
-	var autoLoopUrl = _STATIC_URL + 'authoringTool/loopDetection/' +  VIDEO_ID_FILE;
+	var autoLoopUrl = _STATIC_URL + 'authoringTool/loopDetection/' + videoId;
 	var errorMessage = 'There was a problem automatically detecting loops in this clip. Something might be up with the video file. Try deleting the video directory and re-submitting its url.';
 	handleRequest(autoLoopUrl, errorMessage, showAutoLoopResults);
 }
@@ -486,7 +487,7 @@ function outputGif() {
 		mp4 = true;
 	}
 
-	var createGifUrl = _STATIC_URL + 'authoringTool/makeGif/' +  VIDEO_ID_FILE + '?start=' + startTime + '&end=' + endTime + '&pixelWidth=' + pixelWidth + '&loop=' + loop + '&maskType=' + maskType +'&stillFrame=' + stillFrame + '&mask=' + mask + '&mp4=' + mp4 + '&fps=' + fps;
+	var createGifUrl = _STATIC_URL + 'authoringTool/makeGif/' + videoId + '?start=' + startTime + '&end=' + endTime + '&pixelWidth=' + pixelWidth + '&loop=' + loop + '&maskType=' + maskType +'&stillFrame=' + stillFrame + '&mask=' + mask + '&mp4=' + mp4 + '&fps=' + fps;
 	var errorMessage = 'Oops. There was a problem. Your gif could not be loaded. Something might be up with the video file. Try deleting the video directory and re-submitting its url.';
 	console.log (createGifUrl);
 	handleRequest(createGifUrl, errorMessage, showGif);
@@ -546,6 +547,7 @@ function clearError () {
 
 
 window.onload = function () {
+	console.log ("ready freddy");
 	document.getElementById("curtain").style.opacity = 0;
 	document.getElementById("curtain").style.zIndex = -10;
 }

@@ -5,6 +5,9 @@
 
 	<!-- J Query UI -->
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
+	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  	<script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+
   	<!-- Custom style + CSS -->
 	<link rel="stylesheet" href="{{ url_for('static', filename='um-videoHeadlines-demo.css') }}"></link>
 
@@ -50,10 +53,12 @@
 						 	src="http://www.youtube.com/embed/{{ videoId[8:]  }}?enablejsapi=1&theme=light&showinfo=0&modestbranding=1&controls=0"
 							frameborder="0" id="player-toggle"></iframe>
 						{% else %}
-						<video id="player-video" width="560" height="315" src="{{ videoId }}" preload="metadata" autoplay>
+						<video id="player-video" width="560" height="315" preload="metadata" autoplay>
 							<source src="{{ videoId }}" type="{{ mime }}">
 						</video>
 						{% endif %}
+
+						
 						<!-- the bottom controls -->
 						<div id="clip-selection-controls">
 							<label class="controls-heading"> Clip Selection <span> Drag the slider to change. Or edit the text boxes below and hit 'Enter'. </span> </label>
@@ -164,18 +169,10 @@
 
 		</div>
 	</div>
-
-	<script src="{{ url_for('static', filename='head.1.0.3.core.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='authoringTool.js') }}"></script>
 	<script>
-	head.js("{{ url_for('static', filename='jquery-1.10.2.min.js') }}",
-				"{{ url_for('static', filename='jquery-ui.1.11.3.min.js') }}",
-				"{{ url_for('static', filename='authoringTool.js') }}");
-	head.ready(function() {
-		onStart();
-		console.log ("ready freddy");
-	});
+	    init({{ videoId|tojson }}); //this allows us to access id from server
 	</script>
-
 
 </body>
 </html>
