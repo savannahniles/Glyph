@@ -19,6 +19,7 @@ _STATIC_BASE	= "static/video/"
 
 
 def getVideoInfo(url):
+	url = url.strip()
 	print "///////////////"
 	print "checking URL..."
 	if youtube_url_validation(url):
@@ -42,7 +43,9 @@ def getVideoInfo(url):
 					"video/quicktime","video/x-flv","video/3gpp" \
 					"video/x-msvideo", "video/x-ms-wmv", "video/MP2T", \
 					"application/x-mpegURL"]:
-					filePath = os.path.join(_STATIC_BASE, posixpath.basename(url))
+					filePath = os.path.join(_STATIC_BASE, posixpath.basename(url)+'/')
+					os.makedirs(r''+filePath)
+					filePath = os.path.join(filePath, posixpath.basename(url))
 					shutil.copyfile(url, filePath)
 					return {'type':'ondisk','videoId':posixpath.basename(url),'mime':mime}
 	r = requests.get(url, stream=False)
@@ -53,7 +56,9 @@ def getVideoInfo(url):
 				"video/x-msvideo", "video/x-ms-wmv", "video/MP2T", \
 				"application/x-mpegURL"]:
 
-		filePath = os.path.join(_STATIC_BASE, posixpath.basename(url))
+		filePath = os.path.join(_STATIC_BASE, posixpath.basename(url)+'/')
+		os.makedirs(r''+filePath)
+		filePath = os.path.join(filePath, posixpath.basename(url))
 		with open(filePath, 'wb') as f:
 			for chunk in r.iter_content(chunk_size=1024):
 				if chunk: # filter out keep-alive new chunks

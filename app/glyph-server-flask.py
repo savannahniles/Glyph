@@ -34,12 +34,8 @@ def authoringTool(videoId):
     typeVid = request.args.get('type')
     mime = urllib.unquote(request.args.get('mime')).decode('utf8')
     videoId = urllib.unquote(videoId).decode('utf8')
-    print videoId + "videoId"
-
-    if typeVid is not "youtube":
-        videoId = '../' + video._STATIC_BASE + videoId
-
-
+    if typeVid != "youtube":
+        videoId = '../' + video._STATIC_BASE + videoId + '/' + videoId
 
     #check to see if there's a video folder here
     #if not, download
@@ -97,6 +93,7 @@ def makeThumbnails(videoId):
     errorCode = 0
     start = request.args.get('start')
     end = request.args.get('end')
+    type = request.args.get('type')
     startThumb = None
     endThumb = None
     ts = str(time.time())

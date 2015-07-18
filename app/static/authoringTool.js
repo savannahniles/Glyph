@@ -2,31 +2,72 @@
 
 var _STATIC_URL = "/";
 var videoId;
-
-//download YouTube player API
-var tag = document.createElement('script');
-tag.src = "//www.youtube.com/iframe_api";
-var firstScriptTag = document.getElementsByTagName('script')[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag); // Create YouTube player(s) after the API code downloads.
-
 var player, startTime, endTime;
 var timeUpdater = null;
 var thumbnailUpdater = null;
 var maxGifLength = 15;
 var currentMaskCoordinates = null;
+var VIDEO_TYPE = null;
 
-function onYouTubeIframeAPIReady() {
-    player = new YT.Player('player-toggle', {
-		events: {
-			'onReady': onPlayerReady
-		}
-	}); 
+
+function getQueryVariable(variable)
+{
+       var query = window.location.search.substring(1);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable){return pair[1];}
+       }
+       return(false);
 }
 
-function onPlayerReady(evt) {
-    initSlider();
+var VIDEO_TYPE = getQueryVariable('type');
 
+
+var onStart = function() {
+  if(document.getElementById('player-toggle') != null){
+    //download YouTube player API
+    var tag = document.createElement('script');
+    tag.src = "//www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    // Create YouTube player(s) after the API code downloads.
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player-toggle', {
+        events: {
+          'onReady': onPlayerReady
+        }
+      });
+    }
+    function onPlayerReady(evt) {
+        initSlider();
+    }
+  }
+  else {
+    document.getElementById('player-video').addEventListener('loadeddata', function() {
+        player = {
+          getDuration: function() {
+            return parseInt(document.getElementById('player-video').duration);
+          },
+          mute: function() {
+            return document.getElementById('player-video').setAttribute('muted','true');
+          },
+          seekTo: function(t) {
+            return document.getElementById('player-video').currentTime = t;
+          },
+          getCurrentTime: function() {
+            return document.getElementById('player-video').currentTime;
+          }
+        };
+        initSlider();
+      }, false);
+
+  }
 }
+
+
+
 
 
 //---------------------------Set the page up (content + listeners)-----------------------------
@@ -63,7 +104,7 @@ function buildMask (id) {
     drag = false;
 
 	function draw() {
-		if (id == 'region-mask') { //draw rectangle 
+		if (id == 'region-mask') { //draw rectangle
 			ctx.fillRect(rect.startX, rect.startY, rect.w, rect.h);
 		}
 		else if (id == 'split-mask') {
@@ -134,7 +175,7 @@ function splitMaskButtonClicked () {
 	$( '#arrow-up' ).css("left", "51px")
 	$( "#1-label span" ).text("Freeze Right Side");
 	$( "#2-label span" ).text("Freeze Left Side");
-	
+
 }
 
 function regionMaskButtonClicked () {
@@ -185,6 +226,8 @@ function initSlider() {
 		duration = 2.25;
 		endTime = startTime + duration;
 		var videoDuration = player.getDuration();
+    console.log("videoDuration" + videoDuration);
+
 	    $( "#slider-range" ).slider({
 	      min: 0,
 	      max: videoDuration,
@@ -194,7 +237,7 @@ function initSlider() {
             startTime = ui.value;
             endTime = startTime + duration;
 	        $( "#start" ).val(startTime);
-	        loopVideo(); 
+	        loopVideo();
 	        refreshThumbnails();
 	      }
 	    });
@@ -244,7 +287,9 @@ function refreshThumbnails() {
 	clearTimeout(thumbnailUpdater);
 	function getThumbnails() {
 		console.log ("refreshThumbnails " + startTime + " " + endTime);
-		var thumbnailUrl = _STATIC_URL + 'authoringTool/makeThumbnails/' + videoId + '?start=' + startTime + '&end=' + endTime;
+		var thumbnailUrl = _STATIC_URL + 'authoringTool/makeThumbnails/' + videoId
+                      + '?type='+ VIDEO_TYPE +'&start=' + startTime
+                      + '&end=' + endTime;
 		var errorMessage = 'Oops. There was a problem loading the thumbnails. Something might be up with the video file. Try deleting the video directory and re-submitting its url.';
 		handleRequest(thumbnailUrl, errorMessage, showThumbnails);
 	}
@@ -267,7 +312,7 @@ function getRadioVal(id) {
     var val = "";
     // get list of radio buttons with specified name
     var radios = document.getElementsByClassName(id);
-    
+
     // loop through list of radio buttons
     for (var i=0, len=radios.length; i<len; i++) {
         if ( radios[i].checked ) { // radio checked?
@@ -281,7 +326,7 @@ function getRadioVal(id) {
 //---------------------------The place where shit gets built as a result of asynch calls-----------------------------
 
 function resetGifContainer () {
-	document.getElementById("gifContainer").innerHTML='<p id="loadingGif" class="blink_me">Generating your gif...Check the terminal <i class="fa fa-terminal"></i> for progress.</p>'; 
+	document.getElementById("gifContainer").innerHTML='<p id="loadingGif" class="blink_me">Generating your gif...Check the terminal <i class="fa fa-terminal"></i> for progress.</p>';
 }
 
 var showGif = function () {
@@ -290,7 +335,7 @@ var showGif = function () {
 	if (!response) {
 		handleError ("Whoops, error getting response.")
 		return;
-	}	
+	}
 	// console.log (response);
 	imagePath = response.gif;
 	var gif = document.createElement("img");
@@ -299,7 +344,7 @@ var showGif = function () {
 
 	gifContainer.innerHTML="";
 	gifContainer.appendChild(gif);
-	
+
 }
 
 //we could clean these two up if we wanted
@@ -374,7 +419,7 @@ function pairClicked (pairStart, pairEnd) {
 	$( "#slider-range" ).slider( "value", startTime );
     $( "#start" ).val(startTime);
     $( "#duration" ).val(duration);
-	loopVideo(); 
+	loopVideo();
 	refreshThumbnails();
 }
 
@@ -393,7 +438,7 @@ function outputGif() {
 	console.log(pixelWidth);
 
 	//get still frame
-	var stillFrame = document.getElementById('still-frame').value; 
+	var stillFrame = document.getElementById('still-frame').value;
 	console.log("still frame = " + stillFrame);
 	if (stillFrame > duration) {
 		stillFrame = duration;
@@ -402,10 +447,10 @@ function outputGif() {
 
 
 	//get loop value
-	var loop = getRadioVal("loopButton"); 
+	var loop = getRadioVal("loopButton");
 
 	//get mask value if any
-	var maskType = ""; 
+	var maskType = "";
 	var mask = "";
 	maskRegion = getRadioVal("choice-button");
 	console.log (maskRegion);
@@ -417,7 +462,7 @@ function outputGif() {
 			if (maskRegion == 2) {
 				maskType = "maskRight";
 			}
-		} 
+		}
 	}
 	else if ( !$("#region-mask").hasClass("mask-hidden") ) {
 		mask = resizeMask(currentMaskCoordinates, pixelWidth);
@@ -458,7 +503,7 @@ function resizeMask(currentMaskCoordinates, resizeX) {
 	y2 = parseInt(currentMaskCoordinates[3] * resizeY / 315);
 
 	return [x1, y1, x2, y2];
-	
+
 	// return null;
 
 }
@@ -475,9 +520,9 @@ function handleRequest (url, error, onloadCallback) {
 	        } else {
 	            handleError(error); //otherwise, some other code was returned
 	        }
-	    } 
+	    }
 	}
-	request.open('GET', url, true); 
+	request.open('GET', url, true);
 	request.send();
 }
 
@@ -495,12 +540,10 @@ function clearError () {
 }
 
 
-window.onload = function () { 
+window.onload = function () {
 	console.log ("ready freddy");
 	document.getElementById("curtain").style.opacity = 0;
 	document.getElementById("curtain").style.zIndex = -10;
+
+  onStart();
 }
-
-
-
-
