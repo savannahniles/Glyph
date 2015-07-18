@@ -37,7 +37,6 @@ def getVideoInfo(url):
 				download(videoId, url)
 			return {'type':'youtube', 'videoId':videoId, 'mime':'video/mp4'}
 	if os.path.exists(url):
-		print "coucou"
 		mime = magic.from_file(url, mime=True)
 		if mime in ["video/mp4","video/webm","video/ogg",\
 					"video/quicktime","video/x-flv","video/3gpp" \
@@ -46,8 +45,6 @@ def getVideoInfo(url):
 					filePath = os.path.join(_STATIC_BASE, posixpath.basename(url))
 					shutil.copyfile(url, filePath)
 					return {'type':'ondisk','videoId':posixpath.basename(url),'mime':mime}
-	print "yoLi"
-	print url
 	r = requests.get(url, stream=False)
 	peek = r.iter_content(256).next() # http://stackoverflow.com/a/13198035
 	mime = magic.from_buffer(peek, mime=True)
