@@ -355,7 +355,7 @@ var showGif = function () {
 //we could clean these two up if we wanted
 
 var showThumbnails = function () {
-	console.log ("here!")
+	console.log ("showThumbnails fired")
 	startContainer = document.getElementById("startFrame");
 	endContainer = document.getElementById("endFrame");
 	response = JSON.parse(this.responseText);
@@ -411,7 +411,7 @@ function focusRight () {
 
 function loopDetection() {
 	document.getElementById("loop-results").innerHTML = "<span class='blink_me'> Looking for loops. This takes a while. </br> Leave Glyph alone, and check terminal <i class='fa fa-terminal'></i> for progress.</span>"
-	var autoLoopUrl = _STATIC_URL + 'authoringTool/loopDetection/' + videoId;
+	var autoLoopUrl = _STATIC_URL + 'authoringTool/loopDetection/' +  VIDEO_ID_FILE;
 	var errorMessage = 'There was a problem automatically detecting loops in this clip. Something might be up with the video file. Try deleting the video directory and re-submitting its url.';
 	handleRequest(autoLoopUrl, errorMessage, showAutoLoopResults);
 }
@@ -486,7 +486,7 @@ function outputGif() {
 		mp4 = true;
 	}
 
-	var createGifUrl = _STATIC_URL + 'authoringTool/makeGif/' + videoId + '?start=' + startTime + '&end=' + endTime + '&pixelWidth=' + pixelWidth + '&loop=' + loop + '&maskType=' + maskType +'&stillFrame=' + stillFrame + '&mask=' + mask + '&mp4=' + mp4 + '&fps=' + fps;
+	var createGifUrl = _STATIC_URL + 'authoringTool/makeGif/' +  VIDEO_ID_FILE + '?start=' + startTime + '&end=' + endTime + '&pixelWidth=' + pixelWidth + '&loop=' + loop + '&maskType=' + maskType +'&stillFrame=' + stillFrame + '&mask=' + mask + '&mp4=' + mp4 + '&fps=' + fps;
 	var errorMessage = 'Oops. There was a problem. Your gif could not be loaded. Something might be up with the video file. Try deleting the video directory and re-submitting its url.';
 	console.log (createGifUrl);
 	handleRequest(createGifUrl, errorMessage, showGif);
