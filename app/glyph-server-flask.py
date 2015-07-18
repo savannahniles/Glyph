@@ -3,6 +3,8 @@ import sys                                                               # for o
 import json
 import csv
 import time
+import urllib
+from os.path import relpath
 
 #helper functions
 import video
@@ -29,9 +31,19 @@ def umVideoHeadlinesDemo():
 #page for editing a video
 @app.route('/authoringTool/<videoId>')
 def authoringTool(videoId):
+    typeVid = request.args.get('type')
+    mime = urllib.unquote(request.args.get('mime')).decode('utf8')
+    videoId = urllib.unquote(videoId).decode('utf8')
+    print videoId + "videoId"
+
+    if typeVid is not "youtube":
+        videoId = '../' + video._STATIC_BASE + videoId
+
+
+
     #check to see if there's a video folder here
     #if not, download
-    return render_template('authoringTool.html', videoId=videoId)
+    return render_template('authoringTool.html', videoId=videoId,type=typeVid,mime=mime)
 
 
 #------- API ---------
@@ -41,10 +53,12 @@ def authoringTool(videoId):
 @app.route('/authoringTool/', methods=['POST'])
 def submitUrl():
     url=request.form['url']
-    videoId = video.getVideoInfo(url) #testing
-    print video.printGlyph();
-    if videoId:
-        return redirect(url_for('authoringTool', videoId=videoId)) #eventually what we want to do is redirect to a different page if not youtube
+    infos = video.getVideoInfo(url) #testing
+    print video.printGlyph()
+    if infos:
+        return redirect(url_for('authoringTool', \
+        videoId=urllib.quote_plus(infos['videoId']), \
+        type=infos['type'],mime=infos['mime']))
     else:
         error = "There was an issue downloading that video...Give it another shot, or try something else."
         return redirect(url_for('umVideoHeadlinesDemo', error=error))
@@ -118,4 +132,3 @@ if __name__ == '__main__':
     else:
         app.run(port = int(sys.argv[1])) # run on the specified port number
     # app.run(host = "0.0.0.0", port = 7500)
-
