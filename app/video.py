@@ -44,7 +44,8 @@ def getVideoInfo(url):
 					"video/x-msvideo", "video/x-ms-wmv", "video/MP2T", \
 					"application/x-mpegURL"]:
 					filePath = os.path.join(_STATIC_BASE, posixpath.basename(url)+'/')
-					os.makedirs(r''+filePath)
+					if not os.path.isdir(filePath):
+						os.makedirs(r''+filePath)
 					filePath = os.path.join(filePath, posixpath.basename(url))
 					shutil.copyfile(url, filePath)
 					return {'type':'ondisk','videoId':posixpath.basename(url),'mime':mime}
@@ -57,7 +58,8 @@ def getVideoInfo(url):
 				"application/x-mpegURL"]:
 
 		filePath = os.path.join(_STATIC_BASE, posixpath.basename(url)+'/')
-		os.makedirs(r''+filePath)
+		if not os.path.isdir(filePath):
+			os.makedirs(r''+filePath)
 		filePath = os.path.join(filePath, posixpath.basename(url))
 		with open(filePath, 'wb') as f:
 			for chunk in r.iter_content(chunk_size=1024):
@@ -214,8 +216,9 @@ def processGif(videoId, start, end, pixelWidth, loop, maskType, stillFrame, mask
 #-------------------------------------- getters --------------------------------------
 
 def getVideoPath(videoId):
-	videoFile = os.path.join(_STATIC_BASE, videoId, videoId + '.mp4')
-	return videoFile
+	# we do not know if its mp4 and if we want that youtube works...
+	prefixed = [filename for filename in os.listdir(os.path.join(_STATIC_BASE, videoId)) if filename.startswith(videoId)]
+	return os.path.join(_STATIC_BASE, videoId, prefixed[0])
 
 def getGifPath(videoId, start, end, pixelWidth, loop, maskType, stillFrame, mask, fps): #returns shots
 	outputDir = os.path.join(_STATIC_BASE, videoId, "gifs") #output for everything here

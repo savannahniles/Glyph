@@ -20,8 +20,9 @@ function getQueryVariable(variable)
        }
        return(false);
 }
-
-var VIDEO_TYPE = getQueryVariable('type');
+var url = window.location.pathname;
+var GET_VIDEO_TYPE = getQueryVariable('type');
+var VIDEO_ID_FILE = url.substring(url.lastIndexOf('/')+1);
 
 
 var onStart = function() {
@@ -79,7 +80,9 @@ function init(id) {
 		buildMask('region-mask');
 		buildMask('split-mask');
 		verticallyCenter();
-		document.getElementById("save-note").innerHTML = "<i class='fa fa-folder-open'></i> GIFs + video located in Documents > Glyph > videos > " + videoId + " > gifs";
+		document.getElementById("save-note").innerHTML = "<i class='fa fa-folder-open'></i>"
+    + " GIFs + video located in Documents" +
+    "> Glyph > videos > " + videoId + " > gifs";
 	});
 
 }
@@ -287,9 +290,11 @@ function refreshThumbnails() {
 	clearTimeout(thumbnailUpdater);
 	function getThumbnails() {
 		console.log ("refreshThumbnails " + startTime + " " + endTime);
-		var thumbnailUrl = _STATIC_URL + 'authoringTool/makeThumbnails/' + videoId
-                      + '?type='+ VIDEO_TYPE +'&start=' + startTime
+
+		var thumbnailUrl = _STATIC_URL + 'authoringTool/makeThumbnails/' + VIDEO_ID_FILE
+                      + '?type='+ GET_VIDEO_TYPE +'&start=' + startTime
                       + '&end=' + endTime;
+    console.log(thumbnailUrl);
 		var errorMessage = 'Oops. There was a problem loading the thumbnails. Something might be up with the video file. Try deleting the video directory and re-submitting its url.';
 		handleRequest(thumbnailUrl, errorMessage, showThumbnails);
 	}
