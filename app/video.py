@@ -90,7 +90,6 @@ def createThumbnail(videoId, time, startOrEnd):
 	print "////////////////"
 	print "Processing thumbnail..."
 	videoFile = getVideoPath(videoId)
-	print videoFile + "hehehehe"
 	thumbnailPath = os.path.join(_STATIC_BASE, os.path.splitext(videoId)[0], startOrEnd + ".png" )
 	clip = VideoFileClip(videoFile, audio=False)
 	clip.save_frame(thumbnailPath, t=float(time)) # saves the frame a t=2s

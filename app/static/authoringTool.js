@@ -50,12 +50,13 @@ else {
   document.getElementById('player-video').addEventListener('loadedmetadata', function() {
       player = {
         getDuration: function() {
-          return parseInt(document.getElementById('player-video').duration);
+          return document.getElementById('player-video').duration;
         },
         mute: function() {
           return document.getElementById('player-video').setAttribute('muted','true');
         },
         seekTo: function(t) {
+          console.log("t is "+ t);
           return document.getElementById('player-video').currentTime = t;
         },
         getCurrentTime: function() {
@@ -89,7 +90,7 @@ function init(id) {
 		verticallyCenter();
 		document.getElementById("save-note").innerHTML = "<i class='fa fa-folder-open'></i> GIFs"
     + "+ video located in Documents > Glyph > videos > "
-    + videoId + " > gifs";
+    + videoId.substring(0,videoId.lastIndexOf('.')) + " > gifs";
 	});
 
 }
@@ -292,14 +293,69 @@ function loopVideo() {
 }
 
 function refreshThumbnails() {
-	clearTimeout(thumbnailUpdater);
-	function getThumbnails() {
-		console.log ("refreshThumbnails " + startTime + " " + endTime);
-		var thumbnailUrl = _STATIC_URL + 'authoringTool/makeThumbnails/' + videoId + '?start=' + startTime + '&end=' + endTime;
-		var errorMessage = 'Oops. There was a problem loading the thumbnails. Something might be up with the video file. Try deleting the video directory and re-submitting its url.';
-		handleRequest(thumbnailUrl, errorMessage, showThumbnails);
-	}
-	thumbnailUpdater = setTimeout(getThumbnails, 1000);
+  // this way work very well with a youtube video embedbed
+  // however we can't obtains fast if we stream it and capture thumb
+  // so we will use a canvas's hack :
+  // http://stackoverflow.com/a/29806483/2766891
+  if(GET_VIDEO_TYPE=="youtube"){
+    clearTimeout(thumbnailUpdater);
+  	function getThumbnails() {
+
+      console.log('getThumb fired !');
+  		console.log ("refreshThumbnails " + startTime + " " + endTime);
+  		var thumbnailUrl = "http://"
+                          + window.location.host + _STATIC_URL
+                          + 'authoringTool/makeThumbnails/'
+                          + videoId
+                          + '?start=' + startTime + '&end=' + endTime;
+      console.log(thumbnailUrl);
+  		var errorMessage = 'Oops. There was a problem loading the thumbnails. Something might be up with the video file. Try deleting the video directory and re-submitting its url.';
+      handleRequest(thumbnailUrl, errorMessage, showThumbnails);
+  	}
+  	thumbnailUpdater = setTimeout(getThumbnails, 500);
+  }
+  else {
+
+    currentTime = player.getCurrentTime(); // store the current time
+
+
+    var canvasStart = document.createElement('canvas');
+    var canvasEnd = document.createElement('canvas');
+
+    var video = document.getElementById('player-video');
+
+    player.seekTo(startTime);
+     canvasStart.getContext('2d')
+                .drawImage(video, 0, 0, video.videoWidth, video.videoHeight)
+    var startThumb = canvasStart.toDataURL("image/jpeg", 0.5);
+
+    player.seekTo(endTime);
+    canvasEnd.getContext('2d')
+                .drawImage(video, 0, 0, video.videoWidth, video.videoHeight)
+    var endThumb = canvasEnd.toDataURL("image/jpeg", 0.5);
+
+    player.seekTo(currentTime);
+
+    var startContainer = document.getElementById("startFrame"),
+        endContainer = document.getElementById("endFrame");
+
+    var startThumbnail = document.createElement("img");
+  	startThumbnail.setAttribute('src', startThumb);
+  	startThumbnail.setAttribute('class', 'thumb');
+  	var endThumbnail = document.createElement("img");
+  	endThumbnail.setAttribute('src', endThumb);
+  	endThumbnail.setAttribute('class', 'thumb');
+
+  	startContainer.innerHTML="";
+  	startContainer.appendChild(startThumbnail);
+  	endContainer.innerHTML="";
+  	endContainer.appendChild(endThumbnail);
+
+    console.log("end hack");
+
+  }
+
+
 }
 
 
