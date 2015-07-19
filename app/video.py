@@ -30,12 +30,10 @@ def getVideoInfo(url):
 		with ydl:
 			r = ydl.extract_info(url, download=False)  # don't download, much faster
 			videoId = r['extractor'].strip().replace("-","") + '-' + r['id']
-			print videoId
 			outputDir = os.path.join(_STATIC_BASE, videoId)
-			infoFileName = os.path.join(outputDir, videoId + '.json')
 			if not os.path.exists(outputDir):
 				os.makedirs(outputDir)
-				download(videoId, url)
+			download(videoId, url)
 			return {'type':'youtube', 'videoId':videoId, 'mime':'video/mp4'}
 	if os.path.exists(url):
 		mime = magic.from_file(url, mime=True)
@@ -78,7 +76,7 @@ def download(videoId, url):
 	print "////////////////"
 	print "Downloading video..."
 
-	videoPath = getVideoPath(videoId)
+	videoPath = os.path.join(_STATIC_BASE, videoId, videoId + '.mp4')
 	options = {
 	    'extractaudio' : False,      # only keep the audio
 	    'format': 'mp4',
@@ -219,7 +217,9 @@ def processGif(videoId, start, end, pixelWidth, loop, maskType, stillFrame, mask
 def getVideoPath(videoId):
 	# we do not know if its mp4 and if we want that youtube works...
 	videoId = os.path.splitext(videoId)[0]
+	print [filename for filename in os.listdir(os.path.join(_STATIC_BASE, videoId))]
 	prefixed = [filename for filename in os.listdir(os.path.join(_STATIC_BASE, videoId)) if filename.startswith(videoId)]
+	print len(prefixed)
 	return os.path.join(_STATIC_BASE, videoId, prefixed[0])
 
 def getGifPath(videoId, start, end, pixelWidth, loop, maskType, stillFrame, mask, fps): #returns shots
