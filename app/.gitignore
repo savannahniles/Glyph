@@ -6,3 +6,4 @@ share
 .Python
 /static/video
 video.pyc
+.DS_Store

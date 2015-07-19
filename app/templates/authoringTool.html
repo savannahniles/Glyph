@@ -10,10 +10,7 @@
 
   	<!-- Custom style + CSS -->
 	<link rel="stylesheet" href="{{ url_for('static', filename='um-videoHeadlines-demo.css') }}"></link>
-	<script src="{{ url_for('static', filename='authoringTool.js') }}"></script>
-	<script>
-	    init({{ videoId|tojson }}); //this allows us to access id from server
-	</script>
+
 
 	<!-- Font Awesome, google fonts -->
 	<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
@@ -50,9 +47,18 @@
 						<canvas class="mask-canvas mask-hidden" id="split-mask" width="560" height="315"></canvas>
 						<canvas class="mask-canvas mask-hidden" id="region-mask" width="560" height="315"></canvas>
 
+						{% if type == "youtube" %}
 						<!-- the iFrame -->
-						<iframe width="560" height="315" src="http://www.youtube.com/embed/{{ videoId[8:]  }}?enablejsapi=1&theme=light&showinfo=0&modestbranding=1&controls=0" frameborder="0" id="player-toggle"></iframe>
-						
+						<iframe width="560" height="315"
+						 	src="http://www.youtube.com/embed/{{ videoId[8:]  }}?enablejsapi=1&theme=light&showinfo=0&modestbranding=1&controls=0"
+							frameborder="0" id="player-toggle"></iframe>
+						{% else %}
+						<video id="player-video" width="560" height="315" preload="none" autoplay>
+							<source src="{{ videoId }}" type="{{ mime }}">
+						</video>
+						{% endif %}
+
+
 						<!-- the bottom controls -->
 						<div id="clip-selection-controls">
 							<label class="controls-heading"> Clip Selection <span> Drag the slider to change. Or edit the text boxes below and hit 'Enter'. </span> </label>
@@ -74,7 +80,7 @@
 									<button class="choice-button" id="auto-loop" onclick="loopDetection()">Detect Loops</button>
 								</div>
 							</div>
-							
+
 						</div> <!-- end controls -->
 
 					</div> <!-- end player container -->
@@ -89,7 +95,7 @@
 						<div class="keyframeContainer">
 							<div class="keyframe dotted" id="startFrame"></div>
 							<div>Start frame</div>
-						</div> 
+						</div>
 						<div class="keyframeContainer">
 							<div class="keyframe dotted" id="endFrame"></div>
 							<div>End frame</div>
@@ -150,9 +156,9 @@
 					</div>
 
 				</div>
-				
-				
-			
+
+
+
 
 		</div> <!-- end left col -->
 
@@ -163,7 +169,10 @@
 
 		</div>
 	</div>
-		
-	
+	<script src="{{ url_for('static', filename='authoringTool.js') }}"></script>
+	<script>
+	    init({{ videoId|tojson }}); //this allows us to access id from server
+	</script>
+
 </body>
 </html>

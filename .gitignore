@@ -1,3 +1,4 @@
 app/env/
 Glyph-nw/output/
 Glyph-nw/node_modules
+.DS_Store

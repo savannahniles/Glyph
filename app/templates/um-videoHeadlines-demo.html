@@ -5,7 +5,7 @@
 
 		<!-- JQuery -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
- 
+
 		<link rel="stylesheet" href="{{ url_for('static', filename='um-videoHeadlines-demo.css') }}"></link>
 
 		<!-- Font awesome + google fonts -->
@@ -14,28 +14,6 @@
 
 	</head>
 	<body>
-
-		<script type="text/javascript">
-		// document.getElementById("button").addEventListener('click', function () {
-		//     var text = document.getElementById('text');
-		//     text.text = (text.text + ' after clicking');
-		// });
-		var fillVal = function(url) {
-			var val = document.getElementById('url-value');
-			val.value = url;
-			submitForm();
-		}
-		var showLoading = function () {
-			console.log("loading");
-			document.getElementById("url-loading").style.visibility = "visible";
-		}
-		var submitForm = function() {
-			showLoading();
-			document.getElementById("form").submit();
-		}
-		</script>
-
-
 		<div class="outer">
 		<div class="middle">
 		<div class="inner">
@@ -47,19 +25,53 @@
 						{{ request.args.get('error', '') }}
 					</div>
 					<form id="form" method="post" action="{{ url_for('submitUrl') }}">
-						<label for="url">Start with a YouTube URL:</label>
+						<label for="url">Start with a YouTube URL / Video URL / Video filepath:</label>
 						<input id="url-value" type="text" name="url" autofocus/>
-						<span class="button hover-highlight" onclick=submitForm();>
+						<span class="button hover-highlight">
 			                <i class=" fa-play-circle fa fa-lg"></i>
 			            </span>
 			        </form>
 			        <div class="small-text">
-			        	(Glyph loves short, stabilized videos. Try making glyphs about <span class="hover-highlight suggestion" onclick=fillVal("https://www.youtube.com/watch?v=eCG0M6T5sMU")>silkworms</span>, <span class="hover-highlight suggestion" onclick=fillVal("https://www.youtube.com/watch?v=fSiDIaab2nY")>cities</span>, or <span class="hover-highlight suggestion" onclick=fillVal("https://www.youtube.com/watch?v=_lJCG1zYc_k")>love</span>.)
+			        	(Glyph loves short, stabilized videos. Try making glyphs about
+								<span class="hover-highlight suggestion" data-fill="https://www.youtube.com/watch?v=eCG0M6T5sMU">silkworms</span>,
+								<span class="hover-highlight suggestion" data-fill="https://www.youtube.com/watch?v=fSiDIaab2nY">cities</span>,
+								or
+								<span class="hover-highlight suggestion" data-fill="https://www.youtube.com/watch?v=_lJCG1zYc_k">love</span>.)
 			   		</div>
 			   		<div id ="url-loading" class="small-text blink_me">Loading...check terminal <i class='fa fa-terminal'></i> for progress.</div>
 		        </h2>
 		</div>
 		</div>
 		</div>
+
+
+
+		<script type="text/javascript">
+		document.addEventListener("DOMContentLoaded", function(event) {
+
+
+			var submitForm = function() {
+				document.getElementById("url-loading").style.visibility = "visible";
+				document.getElementById("form").submit();
+				return;
+			}
+
+			var spanFill = 	document.getElementsByClassName('hover-highlight suggestion');
+			for(var i=0; i < spanFill.length; i++){
+				spanFill[i].addEventListener('click', function() {
+					document.getElementById('url-value').value = this.dataset.fill;
+					submitForm();
+				}, false);
+			}
+
+			document.getElementsByClassName('button hover-highlight')[0].addEventListener(
+				'click', function() {
+					submitForm();
+				}
+			)
+
+		});
+		</script>
+
 	</body>
 </html>

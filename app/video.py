@@ -8,37 +8,75 @@ from moviepy.editor import *
 import moviepy.video.tools.drawing as dw #for masking
 from moviepy.video.tools.cuts import FramesMatches #for loop detection
 
+from requests.compat import chardet # for mime type compare
+import magic
+import posixpath
+import shutil
+
 
 _STATIC_URL		= "/"
 _STATIC_BASE	= "static/video/"
 
 
 def getVideoInfo(url):
+	url = url.strip()
 	print "///////////////"
 	print "checking URL..."
-	if not youtube_url_validation(url):
-		return None
-	print "////////////////"
-	print "Getting video info..."
-	ydl = youtube_dl.YoutubeDL()
-	r = None
-	with ydl:
-		r = ydl.extract_info(url, download=False)  # don't download, much faster 
-		videoId = r['extractor'].strip().replace("-","") + '-' + r['id']
-		print videoId
-
-		outputDir = os.path.join(_STATIC_BASE, videoId)
-		infoFileName = os.path.join(outputDir, videoId + '.json')
-		if not os.path.exists(outputDir):
-			os.makedirs(outputDir)
+	if youtube_url_validation(url):
+		print "////////////////"
+		print "Getting video info..."
+		ydl = youtube_dl.YoutubeDL()
+		r = None
+		with ydl:
+			r = ydl.extract_info(url, download=False)  # don't download, much faster
+			videoId = r['extractor'].strip().replace("-","") + '-' + r['id']
+			outputDir = os.path.join(_STATIC_BASE, videoId)
+			if not os.path.exists(outputDir):
+				os.makedirs(outputDir)
 			download(videoId, url)
-		return videoId
+			return {'type':'youtube', 'videoId':videoId, 'mime':'video/mp4'}
+	if os.path.exists(url):
+		mime = magic.from_file(url, mime=True)
+		if mime in ["video/mp4","video/webm","video/ogg",\
+					"video/quicktime","video/x-flv","video/3gpp" \
+					"video/x-msvideo", "video/x-ms-wmv", "video/MP2T", \
+					"application/x-mpegURL"]:
+					filePath = os.path.join(_STATIC_BASE, os.path.splitext(posixpath.basename(url))[0]+'/')
+					if not os.path.isdir(filePath):
+						os.makedirs(r''+filePath)
+					filePath = os.path.join(filePath, posixpath.basename(url))
+					shutil.copyfile(url, filePath)
+					return {'type':'ondisk','videoId':posixpath.basename(url),'mime':mime}
+	r = requests.get(url, stream=False)
+	peek = r.iter_content(256).next() # http://stackoverflow.com/a/13198035
+	mime = magic.from_buffer(peek, mime=True)
+	if mime in ["video/mp4","video/webm","video/ogg",\
+				"video/quicktime","video/x-flv","video/3gpp" \
+				"video/x-msvideo", "video/x-ms-wmv", "video/MP2T", \
+				"application/x-mpegURL"]:
+
+		filePath = os.path.join(_STATIC_BASE, os.path.splitext(posixpath.basename(url))[0]+'/')
+		if not os.path.isdir(filePath):
+			os.makedirs(r''+filePath)
+		filePath = os.path.join(filePath, posixpath.basename(url))
+		with open(filePath, 'wb') as f:
+			for chunk in r.iter_content(chunk_size=1024):
+				if chunk: # filter out keep-alive new chunks
+					f.write(chunk)
+					f.flush()
+		return {'type':'downloaded', 'videoId':posixpath.basename(url),'mime':mime}
+	else:
+		return None
+
+
+
+
 
 def download(videoId, url):
 	print "////////////////"
 	print "Downloading video..."
 
-	videoPath = getVideoPath(videoId)
+	videoPath = os.path.join(_STATIC_BASE, videoId, videoId + '.mp4')
 	options = {
 	    'extractaudio' : False,      # only keep the audio
 	    'format': 'mp4',
@@ -52,7 +90,7 @@ def createThumbnail(videoId, time, startOrEnd):
 	print "////////////////"
 	print "Processing thumbnail..."
 	videoFile = getVideoPath(videoId)
-	thumbnailPath = os.path.join(_STATIC_BASE, videoId, startOrEnd + ".png" )
+	thumbnailPath = os.path.join(_STATIC_BASE, os.path.splitext(videoId)[0], startOrEnd + ".png" )
 	clip = VideoFileClip(videoFile, audio=False)
 	clip.save_frame(thumbnailPath, t=float(time)) # saves the frame a t=2s
 	return os.path.join(_STATIC_URL, thumbnailPath)
@@ -61,17 +99,17 @@ def loopDetection(videoId):
 	print "////////////////"
 	print "Looking for loops..."
 
-	outputDir = os.path.join(_STATIC_BASE, videoId)
+	outputDir = os.path.join(_STATIC_BASE, os.path.splitext(videoId)[0])
 	selected_scenes_file = os.path.join(outputDir, "loops.txt") #ultimately what we want to fill
 	if not os.path.exists(selected_scenes_file):
 
 		videoFile = getVideoPath(videoId)
 		clip = VideoFileClip(videoFile, audio=False)
-		
+
 		clip_small = clip.resize(width=150) # Downsize the clip to a width of 150px to speed up things
 
 		matches = FramesMatches.from_clip(clip_small, 5, 3) # Find all the pairs of matching frames an return their corresponding start and end times.
-		# matchesFile = os.path.join(outputDir, "matches.txt") # (Optional) Save the matches for later use. 
+		# matchesFile = os.path.join(outputDir, "matches.txt") # (Optional) Save the matches for later use.
 		# matches.save(matchesFile)
 		# matches = FramesMatches.load(matchesFile)
 
@@ -144,7 +182,7 @@ def processGif(videoId, start, end, pixelWidth, loop, maskType, stillFrame, mask
 		colRight = 0
 		if maskType == 'maskRight':
 			colLeft = 0
-			colRight = 1		
+			colRight = 1
 		clipMask = dw.color_split(clip.size, p1=(float(p[0]), float(p[1])), p2=(float(p[2]), float(p[3])), col1=colLeft, col2=colRight, grad_width=25) # blur the mask's edges
 		snapshot = (clip.to_ImageClip(t=(float(stillFrame)))
 				.set_duration(d)
@@ -164,7 +202,7 @@ def processGif(videoId, start, end, pixelWidth, loop, maskType, stillFrame, mask
 		composition.write_gif(gifPath) #auto
 	else:
 		composition.write_gif(gifPath, fps=(float(fps)))
-	
+
 	if mp4 == "true":
 		print "//////////////////"
 		print "Writing your video...."
@@ -173,13 +211,18 @@ def processGif(videoId, start, end, pixelWidth, loop, maskType, stillFrame, mask
 
 	return os.path.join(_STATIC_URL, gifPath)
 
-#-------------------------------------- getters -------------------------------------- 
+#-------------------------------------- getters --------------------------------------
 
 def getVideoPath(videoId):
-	videoFile = os.path.join(_STATIC_BASE, videoId, videoId + '.mp4')
-	return videoFile
+	# we do not know if its mp4 and if we want that youtube works...
+	videoId = os.path.splitext(videoId)[0]
+	print [filename for filename in os.listdir(os.path.join(_STATIC_BASE, videoId))]
+	prefixed = [filename for filename in os.listdir(os.path.join(_STATIC_BASE, videoId)) if filename.startswith(videoId)]
+	print len(prefixed)
+	return os.path.join(_STATIC_BASE, videoId, prefixed[0])
 
 def getGifPath(videoId, start, end, pixelWidth, loop, maskType, stillFrame, mask, fps): #returns shots
+	videoId = os.path.splitext(videoId)[0]
 	outputDir = os.path.join(_STATIC_BASE, videoId, "gifs") #output for everything here
 	if not os.path.exists(outputDir):
 		os.makedirs(outputDir)
@@ -230,17 +273,16 @@ def youtube_url_validation(url):
 		except requests.ConnectionError:
 			print("Failed to connect to the URL")
 			return False
-		
+
 
 def printGlyph():
-	glyph = """ 
-                                             
-     _/_/_/  _/                      _/       
-  _/        _/  _/    _/  _/_/_/    _/_/_/    
- _/  _/_/  _/  _/    _/  _/    _/  _/    _/   
-_/    _/  _/  _/    _/  _/    _/  _/    _/    
- _/_/_/  _/    _/_/_/  _/_/_/    _/    _/     
-                  _/  _/                      
+	glyph = """
+
+     _/_/_/  _/                      _/
+  _/        _/  _/    _/  _/_/_/    _/_/_/
+ _/  _/_/  _/  _/    _/  _/    _/  _/    _/
+_/    _/  _/  _/    _/  _/    _/  _/    _/
+ _/_/_/  _/    _/_/_/  _/_/_/    _/    _/
+                  _/  _/
              _/_/    _/                       """
 	return glyph;
-

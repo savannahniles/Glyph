@@ -34,7 +34,7 @@ body {
 
 .inner {
     margin-left: auto;
-    margin-right: auto; 
+    margin-right: auto;
 }
 
 .blink_me {
@@ -54,19 +54,19 @@ body {
     animation-iteration-count: infinite;
 }
 
-@-moz-keyframes blinker {  
+@-moz-keyframes blinker {
     0% { opacity: 1.0; }
     50% { opacity: 0.0; }
     100% { opacity: 1.0; }
 }
 
-@-webkit-keyframes blinker {  
+@-webkit-keyframes blinker {
     0% { opacity: 1.0; }
     50% { opacity: 0.0; }
     100% { opacity: 1.0; }
 }
 
-@keyframes blinker {  
+@keyframes blinker {
     0% { opacity: 1.0; }
     50% { opacity: 0.0; }
     100% { opacity: 1.0; }
@@ -76,7 +76,7 @@ h1 {
   font-family: 'Libre Baskerville', serif;
   font-weight: lighter;
   color: #ff7651;
-  text-shadow: 2px 2px #F0F0F0; 
+  text-shadow: 2px 2px #F0F0F0;
   font-size: 62px;
   text-align: center;
   margin: 0px;
@@ -571,7 +571,7 @@ h2 .small-text {
 /* Auto loop detection */
 
 #auto-loop {
-	width: auto; 
+	width: auto;
 	display: block;
 	color: #555555;
 	border: 1px solid #d3d3d3;
@@ -692,3 +692,11 @@ h2 .small-text {
 	height: 100%;
 }
 
+
+#player-video,#player-toggle {
+  z-index: 0;
+}
+
+.mask-canvas{
+  z-index:1;
+}
